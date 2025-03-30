@@ -5,13 +5,24 @@ import { authOptions } from "../auth/[...nextauth]/route";
 export async function POST(req: Request) {
     const { name, title, description } = await req.json();
     const session = await getServerSession(authOptions);
+    const user = await prisma.user.findUnique({ where : { email : session?.user?.email || ""} })
 
     if (!session) {
         return new Response(JSON.stringify({ message: "Unauthorized" }), { status: 401 });
     }
 
     const result = await prisma.batch.create({
-        data: { name, title, description }
+        data: { name, title, description, 
+            users : {
+                create : {
+                    userId : user?.id || ""
+                }
+            },
+
+         },
+         include : {
+            users : true
+         }
     });
 
     return new Response(JSON.stringify(result), { status: 200 });
@@ -33,7 +44,7 @@ export async function PUT(req: Request) {
     }
 
     const result = await prisma.batch.update({
-        where: { id: Number(batchId) },
+        where: { id: batchId },
         data: { name, title, description }
     });
 
@@ -55,7 +66,7 @@ export async function DELETE(req: Request) {
     }
 
     const result = await prisma.batch.delete({
-        where: { id: Number(batchId) }
+        where: { id: batchId }
     });
 
     return new Response(JSON.stringify(result), { status: 200 });

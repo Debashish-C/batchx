@@ -1,30 +1,28 @@
 "use client";
 import React, { useState } from "react";
+
 import Link from "next/link";
-import { Router } from "next/router";
-import { redirect } from "next/navigation";
+
 const CreateBatch: React.FC = () => {
   const [name, setName] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDesc] = useState("");
 
   const submitData = async (e: React.SyntheticEvent) => {
-    console.log("trying to submit data");
-
     e.preventDefault();
     try {
       const body = { name, title, description };
-      const result = await fetch(`/api/batch`, {
+      await fetch(`/api/batch`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      console.log(result);
-      await redirect("/");
+      console.log("Batch created successfully");
     } catch (err) {
       console.error(err);
     }
   };
+
   return (
     <form
       onSubmit={submitData}
@@ -32,9 +30,7 @@ const CreateBatch: React.FC = () => {
     >
       <h1 className="text-xl font-bold">Create Your BatchX </h1>
       <div className="flex flex-col p-3 w-full items-start">
-        <label htmlFor="" className="p-1">
-          Batch Name
-        </label>
+        <label className="p-1">Batch Name</label>
         <input
           type="text"
           placeholder="Enter Your Batch Name"
@@ -44,9 +40,7 @@ const CreateBatch: React.FC = () => {
         />
       </div>
       <div className="flex flex-col p-3 w-full items-start">
-        <label htmlFor="" className="p-1">
-          Enter Title Of Your Batch
-        </label>
+        <label className="p-1">Enter Title Of Your Batch</label>
         <input
           type="text"
           placeholder="Title"
@@ -56,12 +50,8 @@ const CreateBatch: React.FC = () => {
         />
       </div>
       <div className="flex flex-col p-3 w-full items-start">
-        <label htmlFor="" className="p-1">
-          Description
-        </label>
+        <label className="p-1">Description</label>
         <textarea
-          name=""
-          id=""
           placeholder="A description of Your Batch"
           className="w-full p-1 border-1 border-black rounded-md"
           value={description}
@@ -69,18 +59,16 @@ const CreateBatch: React.FC = () => {
         />
       </div>
       <div className="flex gap-4">
-        <button>
-          <Link
-            href="/"
-            className="p-3 pl-3 pr-3 border-1 border-blue-500 rounded-md"
-          >
-            Cancel
-          </Link>
-        </button>
+        <Link
+          href="/"
+          className="p-3 pl-3 pr-3 border-1 border-blue-500 rounded-md hover:bg-blue-400"
+        >
+          Cancel
+        </Link>
         <input
           type="submit"
           disabled={!name || !title}
-          className="p-2 pl-3 pr-3 bg-slate-800 font-bold text-white rounded-md"
+          className="p-2 pl-3 pr-3 bg-slate-800 font-bold hover:bg-slate-200 text-white rounded-md"
           value="Create"
         />
       </div>

@@ -55,10 +55,11 @@ model VerificationToken {
 }
 
 model Batch {
-  id          Int    @id @default(autoincrement())
+  id          String      @id @default(cuid())
   name        String
   title       String
   description String
+  users       BatchUser[]
   User        User[]
 }
 
@@ -70,14 +71,24 @@ model User {
   image         String?
   createdAt     DateTime       @default(now()) @map(name: "created_at")
   updatedAt     DateTime       @updatedAt @map(name: "updated_at")
-  batchId       Int?
+  batchId       String?
   Announcement  Announcement[]
   Resource      Resource[]
   accounts      Account[]
   sessions      Session[]
   Batch         Batch?         @relation(fields: [batchId], references: [id])
+  BatchUser     BatchUser[]
 
   @@map(name: "users")
+}
+
+model BatchUser {
+  userId  String
+  batchId String
+  user    User   @relation(fields: [userId], references: [id])
+  batch   Batch  @relation(fields: [batchId], references: [id])
+
+  @@id([userId, batchId]) // Composite primary key
 }
 
 model Announcement {

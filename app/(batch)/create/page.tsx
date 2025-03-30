@@ -7,7 +7,7 @@ import React from "react";
 export default async function page() {
   const session = await getServerSession(authOptions);
   if (!session) {
-    await redirect("/api/auth/signin");
+    redirect("/api/auth/signin");
   }
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center">
